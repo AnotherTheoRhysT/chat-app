@@ -7,16 +7,17 @@ import { useRouter } from 'next/navigation'
 import React, { useState } from 'react'
 import Cookies from 'universal-cookie'
 
+const cookies = new Cookies()
+
 const LogoutButton = ({ setAuth }) => {
 	const router = useRouter()
   const [submitting, setSubmitting] = useState(false)
 	
 	if (setAuth == null) return <Button>Log Out</Button>
 	
-	const cookies = new Cookies()
 	const logoutHanlder = () => {
 		setSubmitting(true)
-		console.log("Logout")
+		console.log("Logging out")
 		axios.post(`${process.env.SERVER_URL}/logout`)
 			.then(res => {
 				console.log("logged out", res)

@@ -5,10 +5,15 @@ import React, { useContext } from 'react'
 import LogoutButton from './LogoutButton'
 import { AuthContext } from '@/components/providers/AuthProvider'
 import { usePathname } from 'next/navigation'
+import Cookies from 'universal-cookie'
+import axios from 'axios'
+
+const cookies = new Cookies()
 
 const Navbar = () => {
 const [auth, setAuth] = useContext(AuthContext)
 	const pathname = usePathname()
+	// console.log('navbar', cookies.get('bearer-token'), auth, axios.defaults.headers.common['Authorization'])
 	return (
 		<nav className='flex justify-between'>
 			<Button>
