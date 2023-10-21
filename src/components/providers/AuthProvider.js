@@ -27,6 +27,11 @@ const AuthProvider = ({ children }) => {
         })
         .catch(err => {
           console.log('login err', err)
+          if (err.response.status == 401) {
+            console.log("Invalid Token")
+            cookies.remove('bearer-token')
+            axios.defaults.headers.common['Authorization'] = null
+          }
         })
     }
 	}, [auth])
