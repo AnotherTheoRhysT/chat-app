@@ -15,13 +15,18 @@ const [auth, setAuth] = useContext(AuthContext)
 	const pathname = usePathname()
 	// console.log('navbar', cookies.get('bearer-token'), auth, axios.defaults.headers.common['Authorization'])
 	return (
-		<nav className='flex justify-between'>
-			<Button>
-				<Link href='/chat'>Home</Link>
-			</Button>
+		<nav className='grid grid-cols-3'>
+			<div>
+				<Button>
+					<Link href='/chat'>Home</Link>
+				</Button>
+			</div>
+			<div className='flex justify-center'>
 				{
 					auth &&	<h3>Welcome, {auth.name}</h3>
 				}
+			</div>
+			<div className='flex justify-end'>
 			{
 				(pathname != '/chat/login') && 
 				(	(auth) ?
@@ -32,6 +37,7 @@ const [auth, setAuth] = useContext(AuthContext)
 					</Button>
 				)
 			}
+			</div>
 		</nav>
 	)
 }
