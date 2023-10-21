@@ -1,5 +1,4 @@
 import { cookies } from 'next/headers'
-import React from 'react'
 
 const getUser = async () => {
 	const token = cookies().get('bearer-token')
@@ -15,7 +14,8 @@ const getUser = async () => {
 	
 	if (!res.ok) {
     // This will activate the closest `error.js` Error Boundary
-    throw new Error('Failed to fetch user data')
+    // throw new Error('Failed to fetch user data')
+		return null
   }
 	return res.json()
 }
