@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useState } from 'react'
+import React, { useEffect, useLayoutEffect, useState } from 'react'
 import ChatWindowLoader from './ChatWindowLoader'
 import Message from './Message'
 import ChatBox from './ChatBox'
@@ -13,7 +13,7 @@ const ChatWindow = ({matches, setCurrentConvo, convoId, convoName, laravelEcho})
 		setMessages(data?.messages)
 	}, [data])
 
-	useLayoutEffect(() => {
+	useEffect(() => {
 		// createSocketConnection();
 		const chatChannel = `chat.${convoId}`
 		laravelEcho.private(chatChannel)
@@ -30,7 +30,7 @@ const ChatWindow = ({matches, setCurrentConvo, convoId, convoName, laravelEcho})
 	if (isLoading && !messages) return <ChatWindowLoader />
 
 	return (
-		<section className='flex flex-col w-full'>
+		<section className='flex flex-col w-full' style={{maxHeight: 'inherit'}}>
 			<div className='p-3 bg-slate-200'>
 				{ !matches && 
 					(
@@ -41,7 +41,7 @@ const ChatWindow = ({matches, setCurrentConvo, convoId, convoName, laravelEcho})
 				}
 				{ convoName }
 			</div>
-			<main className='flex-1'>
+			<main className='flex-1 overflow-y-auto'>
 				{messages?.map(message => (
 					<Message key={message.id} userId={message.user_id} userName={message.user.name}>
 						{ message.message_text }

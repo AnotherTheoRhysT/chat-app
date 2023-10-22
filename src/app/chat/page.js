@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useLayoutEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import ConversationList from './_components/ConversationList'
 import ChatWindow from './_components/ChatWindow'
 import styles from '@/styles/chat.module.css'
@@ -31,30 +31,35 @@ const laravelEcho = new Echo({
 		},
 	})
 
-console.log("Main file loading")
+// console.log("Main file loading")
 
 const Page = () => {
 	const [currentConvo, setCurrentConvo] = useState(null)
 	const matches = useMediaQuery('min-width: 960px')
+	const mainRef = useRef(0)
 
-	useLayoutEffect(() => {
-		console.log("Main page rendering")
+	useEffect(() => {
+		// console.log("Main page rendering")
+		const navHeight = document.getElementById('nav').offsetHeight
+		const windowHeight = window.innerHeight
+		const appHeight = (windowHeight - navHeight) / windowHeight * 100;
+		mainRef.current.style.maxHeight = `${appHeight}dvh`
 	}, [])
 
 	if (matches) {
 		return (
-			<main className={styles.chat_container}>
-				<ConversationList currentConvo={currentConvo} setCurrentConvo={setCurrentConvo}/>
+			<main className={styles.chat_container} ref={mainRef}>
+				<ConversationList currentConvo={currentConvo} setCurrentConvo={setCurrentConvo} />
 				{
 					currentConvo?.id != null ?
-						<ChatWindow matches={matches} setCurrentConvo={setCurrentConvo} convoId={currentConvo?.id} convoName={currentConvo?.conversation_name} laravelEcho={laravelEcho}/> 
+						<ChatWindow matches={matches} setCurrentConvo={setCurrentConvo} convoId={currentConvo?.id} convoName={currentConvo?.conversation_name} laravelEcho={laravelEcho} /> 
 						:
-						(`Select Convo ${ matches ? 'true' : 'false' }`)
+						"Select Convo"
 				}
 			</main>
 		)
 	} else if (currentConvo?.id != null) {
-		return <ChatWindow matches={matches} setCurrentConvo={setCurrentConvo} convoId={currentConvo?.id} convoName={currentConvo?.conversation_name} laravelEcho={laravelEcho}/> 
+		return <ChatWindow matches={matches} setCurrentConvo={setCurrentConvo} convoId={currentConvo?.id} convoName={currentConvo?.conversation_name} laravelEcho={laravelEcho} /> 
 	} else {
 		return <ConversationList currentConvo={currentConvo} setCurrentConvo={setCurrentConvo}/>
 	}

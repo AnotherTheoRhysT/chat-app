@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useState } from 'react'
+import React  from 'react'
 import useConversations from '../_data/useConversations'
 import ConversationListLoader from './ConversationListLoader'
 
@@ -12,7 +12,7 @@ const ConversationList = ({currentConvo, setCurrentConvo}) => {
 	if (isLoading) return <ConversationListLoader />
 	if (data?.conversations)
 		return (
-			<ul>
+			<ul style={{maxHeight: 'inherit'}}>
 				{data.conversations.map(conversation => {
 					// if (conversation.id == 11) setCurrentConvo(conversation)	// For testing only
 					const active = conversation.id === currentConvo?.id
