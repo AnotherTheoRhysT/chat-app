@@ -14,6 +14,7 @@ const ConversationList = ({currentConvo, setCurrentConvo}) => {
 		return (
 			<ul>
 				{data.conversations.map(conversation => {
+					// if (conversation.id == 11) setCurrentConvo(conversation)	// For testing only
 					const active = conversation.id === currentConvo?.id
 					return (
 						<div key={conversation.id} className={`py-2 px-1 hover:bg-slate-200 ${active ? 'bg-slate-200' : ''}`} onClick={() => {setCurrentConvo(conversation)}}>
