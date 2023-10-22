@@ -12,7 +12,7 @@ const ConversationList = ({currentConvo, setCurrentConvo}) => {
 	if (isLoading) return <ConversationListLoader />
 	if (data?.conversations)
 		return (
-			<ul style={{maxHeight: 'inherit'}}>
+			<ul style={{maxHeight: 'inherit', overflowY: 'auto'}}>
 				{data.conversations.map(conversation => {
 					// if (conversation.id == 11) setCurrentConvo(conversation)	// For testing only
 					const active = conversation.id === currentConvo?.id
