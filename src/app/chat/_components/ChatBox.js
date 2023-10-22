@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 
 import { useForm } from 'react-hook-form'
 import * as z from 'zod'
@@ -9,13 +9,14 @@ import { Button } from "@/components/ui/button"
 import { AuthContext } from '@/components/providers/AuthProvider'
 
 import axios from 'axios'
+import SendMessageButton from './SendMessageButton'
 
 
 // const FormSchema = z.object({
 //   message: z.string()
 // }).required()
 
-const ChatBox = ({messages, setMessages, convoId}) => {
+const ChatBox = ({lastMessageId, messages, setMessages, convoId}) => {
 	// const form = useForm({
   //   resolver: zodResolver(FormSchema),
   // })
@@ -25,6 +26,7 @@ const ChatBox = ({messages, setMessages, convoId}) => {
 	// 	formData.message = ""
 	// }
 	const [auth, setAuth] = useContext(AuthContext)
+	const [sendingMessage, setSendingMessage] = useState(false)
 	// console.log('auth', auth)
 
 	const messageRef = useRef(null);
@@ -34,49 +36,43 @@ const ChatBox = ({messages, setMessages, convoId}) => {
 	}, [])
 
 	const handleSendMessage = () => {
+		setSendingMessage(true)
+
 		console.log(messageRef.current.value)
-		// const newMessage = {
-
-		// }
-		// conversation_id: 26
-		// deleted_at: null
-		// id: 73
-		// message_text:  "Officia at odit perspiciatis molestiae itaque rem. Quis nisi ipsum cumque quibusdam quis aperiam. Sit amet impedit magni voluptates. Similique sed tempore rerum dicta quis fuga architecto."
-		// sent_timestamp: "2023-10-08T11:13:57.000000Z"
-		// user: 
-		// 	created_at: "2023-10-08T10:23:38.000000Z"
-		// 	email: "queen57@example.net"
-		// 	email_verified_at: "2023-10-08T10:23:38.000000Z"
-		// 	id: 22
-		// 	name: "Miss Dominique Jacobson"
-		// 	updated_at: "2023-10-08T10:23:38.000000Z"
-
-		// 	created_at: "2023-10-08T10:23:38.000000Z"
-		// 	email: "bette47@example.com"
-		// 	email_verified_at: "2023-10-08T10:23:38.000000Z"
-		// 	id: 23
-		// 	name: "Cleo Nader"
-		// 	updated_at: "2023-10-08T10:23:38.000000Z"
-
-
-		// setMessages([...messages, ])
-		axios.post(`${process.env.SERVER_URL}/api/chat/message/send`, {
+		const now = new Date();
+		const newMessage = {
 			conversation_id: convoId,
-			message_text: messageRef.current.value
-		})
-		.then(res => {
-			console.log("Sent", res)
-			messageRef.current.value = ''
-		})
-		.catch(err => {
-			console.log("Message send error", err)
-		})
+			deleted_at: null,
+			id: `${convoId}${lastMessageId + 1}`*1,	// Might cause race condition, but I think it's unlikely
+			message_text: messageRef.current.value,
+			sent_timestamp: now.toISOString(),
+			user: auth,
+			user_id: auth.id,
+		}
+		console.log(newMessage)
+
+		setMessages([...messages, newMessage])
+
+		setSendingMessage(false)
+		messageRef.current.value = ''
+
+		// axios.post(`${process.env.SERVER_URL}/api/chat/message/send`, {
+			// conversation_id: convoId,
+			// message_text: messageRef.current.value
+		// })
+		// .then(res => {
+			// console.log("Sent", res)
+			// messageRef.current.value = ''
+		// })
+		// .catch(err => {
+			// console.log("Message send error", err)
+		// })
 	}
 
 	return (
 		<div className='relative bottom-0 right-0 w-full p-2 border-t-slate-200 border-t-2 border-solid flex'>
 			<Textarea placeholder="Aa" className='flex-1' ref={messageRef} />
-      <Button onClick={handleSendMessage}>Send message</Button>
+			<SendMessageButton sendingMessage={sendingMessage} handleSendMessage={handleSendMessage}/>
 		</div>
 	)
 }

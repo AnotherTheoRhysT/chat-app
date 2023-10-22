@@ -27,7 +27,10 @@ const ChatWindow = ({matches, setCurrentConvo, convoId, convoName, laravelEcho})
 	}, [convoId, laravelEcho])
 
 	if (error) return "LOL Error"
-	if (isLoading && !messages) return <ChatWindowLoader />
+	if (isLoading || messages === undefined) return <ChatWindowLoader />
+
+	console.log('last message', messages.at(-1))
+	const lastMessageId = messages.at(-1).id
 
 	return (
 		<section className='flex flex-col w-full' style={{maxHeight: 'inherit'}}>
@@ -42,13 +45,17 @@ const ChatWindow = ({matches, setCurrentConvo, convoId, convoName, laravelEcho})
 				{ convoName }
 			</div>
 			<main className='flex-1 overflow-y-auto'>
-				{messages?.map(message => (
-					<Message key={message.id} userId={message.user_id} userName={message.user.name}>
-						{ message.message_text }
-					</Message>
-				))}
+				{messages.map((message, index) => {
+					// Check if message sender is the same as previous message; for margin styling
+					const isSameSender = index > 0 && messages.at(index - 1).user_id == message.user_id
+					return (
+						<Message key={message.id} userId={message.user_id} userName={message.user.name} isSameSender={isSameSender}>
+							{ message.message_text }
+						</Message>
+						)
+				})}
 			</main>
-			<ChatBox messages={messages} setMessages={setMessages} convoId={convoId}/>
+			<ChatBox lastMessageId={lastMessageId} messages={messages} setMessages={setMessages} convoId={convoId}/>
 		</section>
 	)
 }
